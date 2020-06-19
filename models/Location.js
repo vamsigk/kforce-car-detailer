@@ -10,7 +10,8 @@ class Location {
         zipcode,
         state,
         country,
-        emailId
+        emailId,
+        coordinate
     ) {
         this.id = id;
         this.locationName = locationName;
@@ -23,6 +24,7 @@ class Location {
         this.state = state;
         this.country = country;
         this.emailId = emailId;
+        this.coordinate = coordinate
     }
 }
 

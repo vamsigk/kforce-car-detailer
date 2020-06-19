@@ -28,7 +28,8 @@ export const fetchLocations = () => {
                     resData[key].zipcode,
                     resData[key].state,
                     resData[key].country,
-                    resData[key].emailId
+                    resData[key].emailId,
+                    resData[key].coordinates
                 )
             )
         }

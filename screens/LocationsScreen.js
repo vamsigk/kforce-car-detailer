@@ -1,14 +1,24 @@
-import React, { useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList } from 'react-native';
+import React, { useState, useEffect, useCallback } from 'react';
+import { View, Text, StyleSheet } from 'react-native';
 import * as locationsActions from '../redux-store/actions/LocationActions';
 import { useDispatch, useSelector } from 'react-redux';
 import Colors from '../constants/Colors';
-import { Entypo, MaterialIcons } from '@expo/vector-icons';
+
+import LocationComponent from '../components/App/LocationComponent';
+
+import MapView, { Marker } from 'react-native-maps';
 
 const LocationsScreen = () => {
 
     const dispatch = useDispatch();
     const locationsToDisplay = useSelector(state => state.locationreducer.locations);
+    const [selectedLocation, setSelectedLocation] = useState(locationsToDisplay.find(location => location.id === 1));
+    const [initRegion, setInitRegion] = useState({
+        latitude: 17.449,
+        longitude: 78.379,
+        latitudeDelta: 0.5,
+        longitudeDelta: 0.5
+    });
 
     const loadLocations = useCallback(async () => {
         await dispatch(locationsActions.fetchLocations());
@@ -18,44 +28,25 @@ const LocationsScreen = () => {
         loadLocations();
     }, [loadLocations]);
 
+    const selectlocationHandler = (locationId) => {
+        const currentLocation = locationsToDisplay.find(location => location.id === locationId);
+        setSelectedLocation(currentLocation);
+    };
+
     return (
         <View style={styles.screen}>
-            <FlatList
-                data={locationsToDisplay}
-                keyExtractor={(item, index) => item.id}
-                renderItem={(itemData) =>
-                    <View style={styles.locationView}>
-                        <Text style={styles.locationNameText}>{itemData.item.locationName}</Text>
-                        <Text style={styles.addressText}>{itemData.item.addressLineOne}</Text>
-                        <Text style={styles.addressText}>{itemData.item.addressLineTwo}</Text>
-                        <Text style={styles.addressText}>{itemData.item.city}</Text>
-                        <Text style={styles.addressText}>{itemData.item.state}</Text>
-                        <Text style={styles.addressText}>{itemData.item.zipcode}</Text>
-                        <Text style={styles.addressText}>{itemData.item.country}</Text>
-
-                        <View style={styles.contactNumberView}>
-                            <Entypo name="old-phone" size={18} color={Colors.appRed} style={{ marginRight: 10 }} />
-                            <Text style={styles.locationContactNumber}>
-                                {itemData.item.phoneNumber}
-                            </Text>
-                        </View>
-                        
-                        <View style={styles.contactNumberView}>
-                            <Entypo name="mobile" size={18} color={Colors.appRed} style={{ marginRight: 10 }} />
-                            <Text style={styles.locationContactNumber}>
-                                {itemData.item.mobileNumber}
-                            </Text>
-                        </View>
-
-                        <View style={styles.contactNumberView}>
-                        <MaterialIcons name="email" size={18} color={Colors.appRed} style={{ marginRight: 10 }}/>
-                            <Text style={styles.locationContactNumber}>
-                                {itemData.item.emailId}
-                            </Text>
-                        </View>
-                    </View>
-                }
-            />
+            <MapView initialRegion={initRegion} style={styles.mapView} showsUserLocation={true} onRegionChange={region => setInitRegion(region)}>
+                {locationsToDisplay.map((location) => (<Marker
+                    key={location.locationName}
+                    title={'Kforce ' + location.locationName}
+                    coordinate={location.coordinate}
+                    onPress={selectlocationHandler.bind(this, location.id)}
+                />))}
+            </MapView>
+            {selectedLocation ?
+                <LocationComponent selectedLocation={selectedLocation}/> :
+                <Text style={{ ...styles.addressText, ...{ margin: 10 } }}>*Please tap on your nearest location to view the details.</Text>
+            }
         </View>)
 };
 
@@ -63,36 +54,20 @@ const styles = StyleSheet.create({
     screen: {
         flex: 1,
         flexDirection: 'column',
-        alignItems: 'flex-start',
-        backgroundColor: Colors.appBlack
+        alignItems: 'center',
+        justifyContent: 'flex-start',
+        backgroundColor: Colors.appBlack,
+        width: '100%'
     },
-    locationView: {
-        borderColor: Colors.appGrey,
-        borderRadius: 10,
-        borderWidth: 2,
-        padding: 20,
-        margin: 10
+    mapView: {
+        flex: 0.60,
+        backgroundColor: Colors.appWhite,
+        width: '100%'
     },
     addressText: {
         fontFamily: 'open-sans',
         fontSize: 16,
         color: Colors.appWhite
-    },
-    locationNameText: {
-        fontFamily: 'open-sans',
-        fontSize: 22,
-        color: Colors.appYellow
-    },
-    contactNumberView: {
-        flexDirection: 'row',
-        width: '100%',
-        justifyContent: 'flex-start',
-        alignItems: 'center'
-    },
-    locationContactNumber: {
-        fontFamily: 'open-sans-bold',
-        fontSize: 18,
-        color: Colors.appRed
     }
 });
 
