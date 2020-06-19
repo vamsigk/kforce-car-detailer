@@ -1,5 +1,6 @@
 import { AsyncStorage } from 'react-native';
 import Firebase from '../../constants/Firebase';
+import Keys from '../../api-keys';
 
 export const SIGN_IN = "SIGN_IN";
 export const SIGN_UP = "SIGN_UP";
@@ -10,7 +11,7 @@ export const AUTHENTICATE = "AUTHENTICATE";
 export const signUpUser = (email, password) => {
 
     console.log('signing up user' + email.toString() + password.toString());
-    const signUpEndPoint = (Firebase.AuthSignUpAPI).concat(Firebase.AuthKey);
+    const signUpEndPoint = (Firebase.AuthSignUpAPI).concat(Keys.google.AuthKey);
 
     return async dispatch => {
         const response = await fetch(signUpEndPoint,
@@ -63,7 +64,7 @@ export const signUpUser = (email, password) => {
 export const signInUser = (email, password) => {
 
     console.log('signing in user' + email.toString() + password.toString());
-    const signInEndPoint = (Firebase.AuthSignInAPI).concat(Firebase.AuthKey);
+    const signInEndPoint = (Firebase.AuthSignInAPI).concat(Keys.google.AuthKey);
 
     return async dispatch => {
         const response = await fetch(signInEndPoint,
@@ -114,7 +115,7 @@ export const signInUser = (email, password) => {
 
 export const resetPassword = (userEmail) => {
 
-    const resetPasswordEndPoint = Firebase.ResetPwdAPI.concat(Firebase.AuthKey);
+    const resetPasswordEndPoint = Firebase.ResetPwdAPI.concat(Keys.google.AuthKey);
 
     return async dispatch => {
         const response = await fetch(resetPasswordEndPoint,
