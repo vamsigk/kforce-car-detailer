@@ -1,0 +1,33 @@
+{
+  "expo": {
+    "name": "kforce Car Detailer",
+    "slug": "kforce-car-wash",
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/images/icon_kforce.png",
+    "splash": {
+      "image": "./assets/images/splash_kforce.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "bundleIdentifier": "com.vsoft.kforce",
+      "buildNumber": "1.0.0",
+      "supportsTablet": true
+    },
+    "android": {
+      "package": "com.vsoft.kforce",
+      "versionCode": 1
+    }
+  }
+}
